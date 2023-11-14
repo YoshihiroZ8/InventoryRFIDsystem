@@ -47,7 +47,6 @@
                             <option value="PC Case">PC Case</option>
                             <option value="Processor">Processor</option>
                             <option value="Graphic Card">Graphic Card</option>
-                            <!-- Add more options as needed -->
                         </select>
                         </div>
                     </div>
@@ -62,7 +61,6 @@
                             <option value="Microsoft Corp">Microsoft Corp</option>
                             <option value="Dell Technologies Inc">Dell Technologies Inc</option>
                             <option value="INTEL Technologies Inc">INTEL Technologies Inc</option>
-                            <!-- Add more options as needed -->
                         </select>
                         </div>
                     </div>
@@ -116,9 +114,6 @@
                                             <td>${data.card_data}</td>
                                             <td>${data.logdate}</td>
                                             <td>${data.stockroom_no}</td>
-                                            <td>
-                                            <a href='*' name='register'>Register</a>
-                                            </td>
                                         </tr>`;
 
                                 }
@@ -128,7 +123,7 @@
                                 tableBody.innerHTML = tableRows;
                             }
                         };          
-                        xhr.open('GET', 'rfiddata-fetcher.php', true);
+                        xhr.open('GET', 'rfiddata-fetcher2.php', true);
                         xhr.send();
                     }
 
@@ -191,15 +186,18 @@ include('connection.php'); // Include your database connection file
 if (isset($_POST['save'])) {
     // Get the form data
     $card_data = $_POST['card_data'];
+    $product_type = $_POST['product_type'];
     $product_from = $_POST['product_from'];
     $register_y = "Yes";
+    $time = date("Y-m-d H:i:s");
+    $available = "Available";
 
     // Construct the SQL update query
-    $sql = "UPDATE rfid SET logdate = '$date', register = '$register_y', product_type = '$product_from' WHERE tag_ID = '$card_data'";
+    $sql = "UPDATE rfid SET logdate = '$time', register = '$register_y', product_type = '$product_type', product_from = '$product_from', availability = '$available' WHERE tag_ID = '$card_data'";
 
     // Perform the update
     if ($con->query($sql) === TRUE) {
-        echo "<script> alert('Update Data successful');window.location='main.php'</script>";
+        echo "<script> alert('Tag/Card Data Updated successful');window.location='main.php'</script>";
     } else {
         echo "Error updating data: " . $con->error;
     }

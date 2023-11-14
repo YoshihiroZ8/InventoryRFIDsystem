@@ -8,6 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
+<style>
+    /* Hide the entire table by default */
+    #searchResultsTable {
+        display: none;
+    }
+</style>
 <body>
     <div class="dashboard">
         <div class="sidebar">
@@ -29,46 +35,88 @@
           </div>
           <hr>
         <section>
-              <table class="table">
-                          <thead>
-                              <tr>
-                              <th>Stockroom No</th>
-                               <th>Total Products</th>
-                               <th>Checkedout Products</th>
-                               <th>Stockroom Status</th>
-                               <th>Action</th>
-                            </tr>
-                        </thead>
-                    <thead>
-                <tbody>
-                  <!-- php search function -->
+              <table id="searchResultsTable" class="table">
+                <thead>
+                  
+                          <!-- php search function -->
                   <?php 
+
+                  // Initialize a flag to check if search results are found
+                  $searchResultsFound = false;
+
                   if (isset($_POST['submit'])) {
                     $search = $_POST['search']; 
-                  }
-                  else{
-                    $search = "";
-                  }
+                  
+                  //query for search data from stockroom table
+                  $query = "SELECT * FROM stockroom WHERE stockroom_no LIKE '%$search%' or total_products  LIKE '%$search%'";
+                  $result = $con->query($query);
+                  if ($result->num_rows > 0) {
+                    echo "
+                    <tr>
+                        <th>Stockroom No</th>
+                        <th>Total Products</th>
+                        <th>Checkedout Products</th>
+                        <th>Stockroom Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>";
 
-                  $query = $con->query("SELECT * FROM stockroom WHERE stockroom_no LIKE '%$search%' or product_num  LIKE '%$search%'");
-                  if ($query->num_rows > 0){
-                  while($row = $query->fetch_assoc() ){
-                    echo "<tr>
-                      <td>" . $row["stockroom_no"] . "</td>
-                      <td>" . $row["product_num"] . "</td>
-                      <td>" . $row["checkout_num"] . "</td>
-                      <td>" . $row["stockroom_status"] . "</td>
-                      <td>
-                          <a href='Details'>Edit</a>
-                        </td>
-                      </tr>";
-                  }
-                    } else {
-                      echo "0 records";
+                    while ($row = $result->fetch_assoc()) {
+                      $searchResultsFound = true; // Set the flag to true when results are found  
+                      echo "
+                        <tr>
+                            <td>" . $row["stockroom_no"] . "</td>
+                            <td>" . $row["total_products"] . "</td>
+                            <td>" . $row["out_product"] . "</td>
+                            <td>" . $row["stockroom_status"] . "</td>
+                        </tr>";
                     }
+                    echo "</tbody>";
+                    } else {
+                        echo "No Stockroom Record Found";
+                    }
+                      
+                   //query for search data from stockroom table
+                   $query2 = "SELECT * FROM rfid WHERE tag_ID LIKE '%$search%' or product_type  LIKE '%$search%' or product_from  LIKE '%$search%'";
+                   $result2 = $con->query($query2);
+                   if ($result2->num_rows > 0) {
+                    echo "
+                    <tr>
+                        <th>RFID Tag ID</th>
+                        <th>Log Date</th>
+                        <th>Register</th>
+                        <th>Product Type</th>
+                        <th>Product Company</th>
+                        <th>Availability</th>
+                        <th>Stockroom No</th>
+                        <th>Checkout Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>";
+
+                    while ($row = $result2->fetch_assoc()) {
+                      $searchResultsFound = true; // Set the flag to true when results are found
+                      echo "
+                        <tr>
+                            <td>" . $row["tag_ID"] . "</td>
+                            <td>" . $row["logdate"] . "</td>
+                            <td>" . $row["register"] . "</td>
+                            <td>" . $row["product_type"] . "</td>
+                            <td>" . $row["product_from"] . "</td>
+                            <td>" . $row["availability"] . "</td>
+                            <td>" . $row["stockroom_no"] . "</td>
+                            <td>" . $row["checkout_d"] . "</td>
+                        </tr>";
+                    }
+                        echo "</tbody>";
+                    } else {
+                        echo "No RFID Data Found";
+                    }
+                  
+                  }
                   ?>
 
-                </tbody>
+
               </thead>
             </table>
            </section> 
@@ -79,4 +127,19 @@
 </html>
 
 
-<!-- php search function -->
+<script>
+    window.onload = function () {
+        // Check if search results were found
+        var searchResultsFound = <?php echo json_encode($searchResultsFound); ?>;
+
+        // Get a reference to the entire table
+        var searchResultsTable = document.getElementById("searchResultsTable");
+
+        // Show the entire table if search results were found, hide it otherwise
+        if (searchResultsFound == true) {
+            searchResultsTable.style.display = "table"; // Show the table
+        } else {
+            searchResultsTable.style.display = "none"; // Hide the table
+        }
+    };
+</script>

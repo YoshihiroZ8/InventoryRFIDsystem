@@ -20,17 +20,19 @@
         </div>
         <div class="main-content">
             <header>
-                <h1>Available Products List</h1>
+                <h1>Checked out Products List</h1>
             </header>
             <section>
             <table class="table">
               <thead>
                   <tr>
-                    <td>Product ID</td>
+                    <td>Tag ID</td>
+                    <td>Log Date</td>
                     <td>Product Type</td>
-                    <td>Date In</td>
-                    <td>Date Out</td>
-                    <td>Product Status</td>
+                    <td>Product Company</td>
+                    <td>Availability</td>
+                    <td>Stockroom No</td>
+                    <td>Checkout Date time</td>
                     <td>Action</td>
                   </tr>
               </thead>
@@ -38,79 +40,34 @@
               <thead>
                 <tbody>
                 <?php   
-                  $query = "SELECT * FROM product WHERE product_status = 'Available'";
+                  $query = "SELECT * FROM rfid WHERE availability = 'Checked Out'";
                   $result = mysqli_query($con, $query);
 
                   //read data of each row
                   if(mysqli_num_rows($result) > 0)
                   { 
-                    foreach($result as $product)
+                    foreach($result as $row)
                     {
                       ?>
                               
                       <tr>
-                      <td><?= $product['product_id']; ?></td>
-                      <td><?= $product['stockroom_no']; ?></td>
-                      <td><?= $product['product_in']; ?></td>
-                      <td><?= $product['product_out']; ?></td>
-                      <td><?= $product['product_status']; ?></td>
-                      <td><a name="checkout_product" href="checkout.php?id=<?= $product['product_id']; ?>">Checkout</a>
-                        </td>
+                      <td><?= $row['tag_ID']; ?></td>
+                      <td><?= $row['logdate']; ?></td>
+                      <td><?= $row['product_type']; ?></td>
+                      <td><?= $row['product_from']; ?></td>
+                      <td><?= $row['availability']; ?></td>
+                      <td><?= $row['stockroom_no']; ?></td>
+                      <td><?= $row['checkout_d']; ?></td>
+                      <td>
+                      <a name="restore" href="restore.php?tag_id=<?= $row['tag_ID']; ?>">Restore</a>
+                      </td>
                       </tr>
 
                     <?php 
                      }
                     }else
                     {
-                      echo"<h5>No Record Found...</h5>";
-                    }
-                    ?>
-
-                </tbody>
-              </thead>
-            </table>
-            </section>
-
-            <h2>Checked out Products List</h2>
-            <section>
-            <table class="table">
-              <thead>
-                  <tr>
-                    <td>Product ID</td>
-                    <td>Product Type</td>
-                    <td>Date In</td>
-                    <td>Date Out</td>
-                    <td>Product Status</td>
-                  </tr>
-              </thead>
-
-              <thead>
-                <tbody>
-                <?php   
-                  $query = "SELECT * FROM product WHERE product_status != 'Available'";
-                  $result = mysqli_query($con, $query);
-
-                  //read data of each row
-                  if(mysqli_num_rows($result) > 0)
-                  { 
-                    foreach($result as $product)
-                    {
-                      ?>
-                              
-                      <tr>
-                      <td><?= $product['product_id']; ?></td>
-                      <td><?= $product['stockroom_no']; ?></td>
-                      <td><?= $product['product_in']; ?></td>
-                      <td><?= $product['product_out']; ?></td>
-                      <td><?= $product['product_status']; ?></td>
-
-                      </tr>
-
-                    <?php 
-                     }
-                    }else
-                    {
-                      echo"<h5>No Record Found...</h5>";
+                      echo"<h5>No Checked out Product Found...</h5>";
                     }
                     ?>
 

@@ -2,7 +2,7 @@
 include('connection.php');
 
 // Query the database for all RFID data
-$sql = "SELECT * FROM rfid ORDER BY logdate DESC"; 
+$sql = "SELECT * FROM rfid WHERE register = 'No' ORDER BY logdate DESC"; 
 
 $result = $con->query($sql);
 

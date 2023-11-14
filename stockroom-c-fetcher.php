@@ -2,7 +2,7 @@
 include('connection.php');
 
 // Query the database for all RFID data
-$sql = "SELECT * FROM rfid ORDER BY logdate DESC"; 
+$sql = "SELECT * FROM rfid WHERE register = 'Yes' AND availability = 'Available' AND Stockroom_no = 'Stockroom C' ORDER BY logdate DESC"; 
 
 $result = $con->query($sql);
 
@@ -17,7 +17,9 @@ if ($result->num_rows > 0) {
             'logdate' => $row['logdate'],
             'product_type' => $row['product_type'],
             'product_from' => $row['product_from'],
-            'stockroom_no' => $row['stockroom_no']
+            'stockroom_no' => $row['stockroom_no'],
+            'movem_status' => $row['movem_status'],
+            'checkout_d' => $row['checkout_d']
         );
     }
 
@@ -29,4 +31,5 @@ if ($result->num_rows > 0) {
 }
 
 $con->close();
+
 ?>
