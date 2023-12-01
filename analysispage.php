@@ -1,5 +1,3 @@
-<?php include('connection.php'); ?>
-<?php include('session.php'); ?>
 
 <!DOCTYPE html>
 <html>
@@ -34,24 +32,25 @@
                 </form>
           </div>
           <hr>
+
         <section>
               <table id="searchResultsTable" class="table">
                 <thead>
                   
                           <!-- php search function -->
-                  <?php 
+                <?php 
+                    include('connection.php'); 
+                    // Initialize a flag to check if search results are found
+                    $searchResultsFound = false;
 
-                  // Initialize a flag to check if search results are found
-                  $searchResultsFound = false;
-
-                  if (isset($_POST['submit'])) {
-                    $search = $_POST['search']; 
-                  
-                  //query for search data from stockroom table
-                  $query = "SELECT * FROM stockroom WHERE stockroom_no LIKE '%$search%' or total_products  LIKE '%$search%'";
-                  $result = $con->query($query);
-                  if ($result->num_rows > 0) {
-                    echo "
+                    if (isset($_POST['submit'])) {
+                        $search = $_POST['search']; 
+                    
+                    //query for search data from stockroom table
+                    $query = "SELECT * FROM stockroom WHERE stockroom_no LIKE '%$search%' or total_products  LIKE '%$search%'";
+                    $result = $con->query($query);
+                    if ($result->num_rows > 0) {
+                        echo "
                     <tr>
                         <th>Stockroom No</th>
                         <th>Total Products</th>
@@ -71,9 +70,9 @@
                             <td>" . $row["stockroom_status"] . "</td>
                         </tr>";
                     }
-                    echo "</tbody>";
+                    echo "</tbody>" ;
                     } else {
-                        echo "No Stockroom Record Found";
+                        echo "No Stockroom Record Found <br><hr>";
                     }
                       
                    //query for search data from stockroom table
@@ -119,7 +118,8 @@
 
               </thead>
             </table>
-           </section> 
+           </section>
+           
           </div>
     </div>
     

@@ -1,4 +1,5 @@
 <?php include('session.php'); ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +11,7 @@
 <body>
     <div class="dashboard">
         <div class="sidebar">
-            <h1>Inventory Management System</h1>
+        <h1>Inventory Management System</h1>
             <ul>
                 <li><a href="main.php">Inventory</a></li>
                 <li><a href="analysispage.php">Analytics</a></li>
@@ -19,14 +20,21 @@
                 <li><a href="logout.php">Exit</a></li>
             </ul>
         </div>
+
         <div class="main-content">
             <header>
-                <h1>RFID Tag registration/ modification</h1>
+                <h1>RFID TAG Registration/Modification</h1>
             </header>
 
-            <section>
+            <!-- Navigation bar to switch between registration form and unregister list -->
+            <div class="navbar">
+                <a href="#" onclick="showRegistrationForm()">Registration Form</a>
+                <a href="#" onclick="showUnregisterList()">Unregister List</a>
+            </div>
+
+            <section id="registrationFormSection">
             <div class="edit_form">
-                <form method="POST" action="rfidtag.php">
+             <form method="POST" action="rfidtag.php">
                 <div id="notification" class="notification"></div>
                     <div class="row">
                         <div class="col-25">
@@ -76,11 +84,12 @@
                 <div class="row">
                     <input type="submit"  name="save" value="Save">
                 </div>
-                </form>
+             </form>
             </div>
             </section>
-
-            <secion>
+            
+            <section id="unregisterListSection" class="scrollable-section" style="display: none;">
+            <br>
             <h2>Unregister Tag ID List</h2>
             <table class="table">
                 <thead>
@@ -92,9 +101,23 @@
                 </thead>
                 <tbody id="rfid-data"></tbody>
             </table>
-                <script>
+            </section>
+        </div>
+    </div>
 
-                    function fetchRFIDData() {
+    <!--JavaScript code -->
+    <script>
+        function showRegistrationForm() {
+            document.getElementById('registrationFormSection').style.display = 'block';
+            document.getElementById('unregisterListSection').style.display = 'none';
+        }
+
+        function showUnregisterList() {
+            document.getElementById('registrationFormSection').style.display = 'none';
+            document.getElementById('unregisterListSection').style.display = 'block';
+        }
+
+        function fetchRFIDData() {
                         // Send an AJAX request to your data-fetcher.php script to fetch data
                         var xhr = new XMLHttpRequest();
                         xhr.onreadystatechange = function () {
@@ -142,7 +165,7 @@
                                 // Display the latest tag data in the input box
                                 document.getElementById('card_data').value = latestData.card_data;
                                 document.getElementById('product_type').value = latestData.product_type;
-                                document.getElementById('product_from').value = latestData.product_type;
+                                document.getElementById('product_from').value = latestData.product_from;
                                 document.getElementById('stockroom_no').value = latestData.stockroom_no;
 
                                  // Display a custom notification
@@ -162,7 +185,7 @@
                 // Automatically hide the notification after a few seconds (adjust as needed)
                 setTimeout(function () {
                     notification.style.display = 'none';
-                }, 3000); // 3 seconds  
+                }, 2000); // 3 seconds  
 }
 
                     // Initially fetch data
@@ -172,10 +195,8 @@
                     // Periodically fetch data every 2 seconds (adjust as needed)
                     setInterval(fetchRFIDData, 3000); 
                     setInterval(fetchLatestRFIDData, 5000); 
-                </script>
-            </section>
-        </div>
-    </div>
+
+    </script>
 </body>
 </html>
 

@@ -7,7 +7,9 @@ include('connection.php');
 $api_key_value = "tPmAT5Ab3j7F9";
 
 // Create a timestamp
+date_default_timezone_set("Asia/Kuala_Lumpur");
 $time = date("Y-m-d H:i:s");
+
 $register_n = "No"; 
 $movement_out = "Out";
 $movement_in = "In";
